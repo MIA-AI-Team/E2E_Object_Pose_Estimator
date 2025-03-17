@@ -1,15 +1,6 @@
-import torch
 import numpy as np
-from torch.utils.data import Dataset
+import torch
 from torchvision.ops import box_iou
-import sys, os
-import json
-import random
-import cv2
-from PIL import Image
-import trimesh
-import pyrender
-import tqdm
 
 _HOUGHVOTING_NUM_INLIER = 100
 _HOUGHVOTING_DIRECTION_INLIER = 0.9
