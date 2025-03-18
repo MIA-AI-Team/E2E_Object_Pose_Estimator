@@ -1,19 +1,13 @@
 import os
-import time
 
 import matplotlib.pyplot as plt
-import torch
-import torchvision
-
-from p4_helper import *
-from utils import reset_seed
-from utils.grad import rel_error
+import torchvision.models as models
 from torch.utils.data import DataLoader
 
-import torchvision.models as models
+from p4_helper import *
 
 vgg16 = models.vgg16(weights=models.VGG16_Weights.IMAGENET1K_V1)
-from pose_cnn import PoseCNN, FeatureExtraction, SegmentationBranch, TranslationBranch, RotationBranch
+from pose_cnn import PoseCNN, FeatureExtraction, SegmentationBranch, TranslationBranch, RotationBranch, eval
 
 feature_extractor = FeatureExtraction(pretrained_model=vgg16)
 segmentation_branch = SegmentationBranch()
@@ -47,7 +41,7 @@ utils.reset_seed(0)
 
 
 def get_data():
-    # NOTE: Set `download=True` for the first time when you set up Google Drive folder.
+    # NOTE:Set `download=True` for the first time when you set up Google Drive folder.
     # Turn it back to `False` later for faster execution in the future.
     # If this hangs, download and place data in your drive manually.
     train_dataset = PROPSPoseDataset(

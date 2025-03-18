@@ -9,3 +9,4 @@ matplotlib~=3.10.1
 tqdm~=4.67.1
 torchvision~=0.21.0
 pillow~=11.1.0
+gdown
