@@ -67,7 +67,7 @@ def main():
     posecnn_model.load_state_dict(torch.load(os.path.join(PATH, "posecnn_model.pth")))
     num_samples = 5
     for i in range(num_samples):
-        out = eval(posecnn_model, dataloader, DEVICE)
+        out = eval(posecnn_model, dataloader, DEVICE, save_path=os.path.join(PATH, "output"))
 
         # plt.axis('off')
         # plt.imshow(out)
