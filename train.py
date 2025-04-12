@@ -26,7 +26,7 @@ import multiprocessing
 
 # Set a few constants related to data loading.
 NUM_CLASSES = 10
-BATCH_SIZE = 64
+BATCH_SIZE = 8
 NUM_WORKERS = multiprocessing.cpu_count()
 path = os.getcwd()
 PATH = os.path.join(path)
