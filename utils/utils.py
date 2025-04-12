@@ -7,6 +7,7 @@ import pyrender
 import torch
 import trimesh
 from torchvision.utils import make_grid
+import os
 
 """
 General utilities to help with implementation
@@ -200,6 +201,7 @@ class Visualize:
         for obj_label in object_dict:
             objname = object_dict[obj_label][0]
             objpath = object_dict[obj_label][1]
+            print(objpath)
             tm = trimesh.load(objpath)
             mesh = pyrender.Mesh.from_trimesh(tm, smooth=False)
             node = pyrender.Node(mesh=mesh, matrix=np.eye(4))

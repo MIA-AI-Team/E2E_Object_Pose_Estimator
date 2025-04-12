@@ -3,6 +3,7 @@ import time
 
 import matplotlib.pyplot as plt
 import torchvision.models as models
+from gdown import download
 from torch.utils.data import DataLoader
 
 from p4_helper import *
@@ -24,7 +25,7 @@ plt.rcParams["image.cmap"] = "gray"
 import multiprocessing
 
 # Set a few constants related to data loading.
-NUM_CLASSES = 10
+NUM_CLASSES = 5
 BATCH_SIZE = 4
 NUM_WORKERS = multiprocessing.cpu_count()
 path = os.getcwd()
@@ -35,7 +36,7 @@ if torch.cuda.is_available():
 else:
     DEVICE = torch.device("cpu")
 
-from utils import PROPSPoseDataset
+from utils import PROPSPoseDataset, BOPDataset
 import utils
 
 utils.reset_seed(0)
@@ -45,31 +46,39 @@ def get_data():
     # NOTE: Set `download=True` for the first time when you set up Google Drive folder.
     # Turn it back to `False` later for faster execution in the future.
     # If this hangs, download and place data in your drive manually.
-    train_dataset = PROPSPoseDataset(
-        PATH, "train",
-        download=True  # False
+    # train_dataset = PROPSPoseDataset(
+    #     PATH, "train",
+    #     download=False  # False
+    # )
+    # val_dataset = PROPSPoseDataset(PATH, "val")
+    # return train_dataset, val_dataset
+    train_dataset = BOPDataset(PATH, "train",
+                    download=False
     )
-    val_dataset = PROPSPoseDataset(PATH, "val")
+    val_dataset = BOPDataset(PATH, "train")
     return train_dataset, val_dataset
 
 
 def main():
     train_dataset, val_dataset = get_data()
+    print(len(train_dataset), len(train_dataset[0]))
+    # print(train_dataset[0])
     dataloader = DataLoader(dataset=train_dataset, batch_size=BATCH_SIZE)
     posecnn_model = PoseCNN(pretrained_backbone=vgg16,
                             models_pcd=torch.tensor(train_dataset.models_pcd).to(DEVICE, dtype=torch.float32),
                             cam_intrinsic=train_dataset.cam_intrinsic).to(DEVICE)
+    print(sum(p.numel() for p in posecnn_model.parameters()))
     posecnn_model.train()
 
     optimizer = torch.optim.Adam(posecnn_model.parameters(), lr=0.001,
                                  betas=(0.9, 0.999))
 
     loss_history = []
-    log_period = 5
+    log_period = 25
     _iter = 0
 
     st_time = time.time()
-    for epoch in range(10):
+    for epoch in range(1):
         train_loss = []
         dataloader.dataset.dataset_type = 'train'
         for batch in dataloader:
@@ -95,9 +104,9 @@ def main():
             _iter += 1
 
         print('Time {0}'.format(time.strftime("%Hh %Mm %Ss", time.gmtime(time.time() - st_time)) + \
-                                ', ' + 'Epoch %02d' % epoch + ', ' + 'Training finished' + f' , with mean training loss {np.array(train_loss).mean()}'))
+                                ', ' + 'Epoch %02d' % (epoch+1) + ', ' + 'Training finished' + f' , with mean training loss {np.array(train_loss).mean()}'))
 
-    torch.save(posecnn_model.state_dict(), os.path.join(PATH, "posecnn_model.pth"))
+    torch.save(posecnn_model.state_dict(), os.path.join(PATH, "posecnn_model2.pth"))
 
     plt.title("Training loss history")
     plt.xlabel(f"Iteration (x {log_period})")
