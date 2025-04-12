@@ -57,9 +57,9 @@ class BOPDataset(Dataset):
 
     def parse_dir(self):
         data_dir = os.path.join(self.dataset_dir, self.split)
-        rgb_path = os.path.join(data_dir, "rgb_cam1-20250317T130825Z-001")
-        depth_path = os.path.join(data_dir, "depth_cam1-20250317T130809Z-001")
-        mask_path = os.path.join(data_dir, "mask_visib_cam1-20250317T130821Z-001")
+        rgb_path = os.path.join(data_dir, "rgb_cam1")
+        depth_path = os.path.join(data_dir, "depth_cam1")
+        mask_path = os.path.join(data_dir, "mask_visib_cam1")
         scene_gt_json = "BOP-Dataset/train/scene_gt_cam1.json"
         scene_gt_info_json = "BOP-Dataset/train/scene_gt_info_cam1.json"
         scene_camera_json = "BOP-Dataset/train/scene_camera_cam1.json"
