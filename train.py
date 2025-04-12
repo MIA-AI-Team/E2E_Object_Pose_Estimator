@@ -70,7 +70,7 @@ def main():
     _iter = 0
 
     st_time = time.time()
-    for epoch in range(10):
+    for epoch in range(1):
         train_loss = []
         dataloader.dataset.dataset_type = 'train'
         for batch in dataloader:
