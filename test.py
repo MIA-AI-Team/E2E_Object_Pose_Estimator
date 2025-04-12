@@ -1,4 +1,6 @@
 import os
+os.environ['PYOPENGL_PLATFORM'] = 'egl'
+
 
 import matplotlib.pyplot as plt
 import torchvision.models as models
