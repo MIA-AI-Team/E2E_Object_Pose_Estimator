@@ -1,4 +1,5 @@
 import os
+os.environ['PYOPENGL_PLATFORM'] = 'egl'
 import time
 
 import matplotlib.pyplot as plt
