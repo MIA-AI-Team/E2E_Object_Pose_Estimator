@@ -26,7 +26,7 @@ import multiprocessing
 
 # Set a few constants related to data loading.
 NUM_CLASSES = 10
-BATCH_SIZE = 4
+BATCH_SIZE = 64
 NUM_WORKERS = multiprocessing.cpu_count()
 path = os.getcwd()
 PATH = os.path.join(path)
@@ -104,7 +104,7 @@ def main():
     plt.xlabel(f"Iteration (x {log_period})")
     plt.ylabel("Loss")
     plt.plot(loss_history)
-    plt.show()
+    plt.save("loss_history.png")
 
 
 if __name__ == '__main__':

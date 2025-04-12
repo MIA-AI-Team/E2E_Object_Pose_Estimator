@@ -24,7 +24,7 @@ import multiprocessing
 
 # Set a few constants related to data loading.
 NUM_CLASSES = 10
-BATCH_SIZE = 4
+BATCH_SIZE = 64
 NUM_WORKERS = multiprocessing.cpu_count()
 path = os.getcwd()
 PATH = os.path.join(path)
@@ -67,9 +67,9 @@ def main():
     for i in range(num_samples):
         out = eval(posecnn_model, dataloader, DEVICE)
 
-        plt.axis('off')
-        plt.imshow(out)
-        plt.show()
+        # plt.axis('off')
+        # plt.imshow(out)
+        # plt.show()
 
 
 if __name__ == '__main__':
