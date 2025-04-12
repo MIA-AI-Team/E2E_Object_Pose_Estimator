@@ -3,12 +3,10 @@ scipy
 trimesh>=4.6.4
 pyrender>=0.1.45
 pyquaternion
-# torch~=2.6.0
-# opencv-python~=4.11.0.86
+torch
 opencv-python
-# matplotlib~=3.10.1
-# tqdm~=4.67.1
-# torchvision~=0.21.0
+matplotlib
+torchvision
+tqdm
 pillow>=11.1.0
-# pillow
 gdown
