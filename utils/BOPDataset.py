@@ -117,11 +117,11 @@ class BOPDataset(Dataset):
     def parse_model(self):
         model_path = os.path.join(self.dataset_dir, "model")
         objpathdict = {
-            0: ["obj_000000", "BOP-Dataset/model/obj_000000.ply"],
-            8: ["obj_000008", "BOP-Dataset/model/obj_000008.ply"],
-            18: ["obj_000018", "BOP-Dataset/model/obj_000018.ply"],
-            19: ["obj_000019", "BOP-Dataset/model/obj_000019.ply"],
-            20: ["obj_000020", "BOP-Dataset/model/obj_000020.ply"],
+            0: ["obj_000000", "ipd/models/obj_000000.ply"],
+            8: ["obj_000008", "ipd/models/obj_000008.ply"],
+            18: ["obj_000018", "ipd/models/obj_000018.ply"],
+            19: ["obj_000019", "ipd/models/obj_000019.ply"],
+            20: ["obj_000020", "ipd/models/obj_000020.ply"],
         }
         self.visualizer = Visualize(objpathdict, self.cam_intrinsic, self.resolution)
         models_pcd_dict = {index: np.array(self.visualizer.objnode[index]['mesh'].vertices) for index in
