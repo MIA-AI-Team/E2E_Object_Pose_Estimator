@@ -7,7 +7,7 @@ import open3d as o3d  # For handling .PLY models
 
 
 class BPRPoseDataset(Dataset):
-    def __init__(self, root: str, split: str = 'train_pbr', max_instance_num: int = 10) -> None:
+    def __init__(self, root: str, split: str = 'train_pbr', max_instance_num: int = 10, scene="000000") -> None:
         """
         Initialize the BPRPoseDataset.
 
@@ -20,7 +20,7 @@ class BPRPoseDataset(Dataset):
 
         self.root = root
         self.split = split
-        self.dataset_dir = os.path.join(self.root, split)
+        self.dataset_dir = os.path.join(self.root, split, scene)
         self.max_instance_num = max_instance_num
         self.H, self.W = 480, 640  # Image dimensions
 
