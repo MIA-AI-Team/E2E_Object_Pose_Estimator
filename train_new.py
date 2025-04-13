@@ -129,7 +129,7 @@ def get_data():
     """Use BPRPoseDataset for training and validation."""
     try:
         # Define the root directory of the dataset
-        root = "/home/seif-ai/pose_cnn_project/E2E_Object_Pose_Estimator/BPR-Dataset"
+        root = "/home/seif-ai/pose_cnn_project/E2E_Object_Pose_Estimator/ipd"
 
         train_dataset = BPRPoseDataset(root=root, split="train")
         val_dataset = BPRPoseDataset(root=root, split="val")
