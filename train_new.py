@@ -50,7 +50,7 @@ else:
     print("CUDA not available, using CPU")
 
 # Update the import to use BPRPoseDataset
-from utils.BPRPoseDataset import BPRPoseDataset
+from BPRPoseDataset import BPRPoseDataset
 import utils
 
 # Function to load point clouds from PLY files
