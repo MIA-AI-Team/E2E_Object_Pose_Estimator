@@ -7,7 +7,7 @@ import open3d as o3d  # For handling .PLY models
 
 
 class BPRPoseDataset(Dataset):
-    def __init__(self, root: str, split: str = 'train', max_instance_num: int = 10) -> None:
+    def __init__(self, root: str, split: str = 'train_pbr', max_instance_num: int = 10) -> None:
         """
         Initialize the BPRPoseDataset.
 
@@ -16,7 +16,7 @@ class BPRPoseDataset(Dataset):
             split (str): Dataset split ('train' or 'val').
             max_instance_num (int): Maximum number of instances per image.
         """
-        assert split in ['train', 'val'], "Split must be 'train' or 'val'."
+        assert split in ['train_pbr', 'val'], "Split must be 'train_pbr' or 'val'."
 
         self.root = root
         self.split = split
@@ -56,7 +56,7 @@ class BPRPoseDataset(Dataset):
 # filepath: /home/seif-ai/pose_cnn_project/E2E_Object_Pose_Estimator/utils/BPRPoseDataset.py
     def parse_model(self):
         """
-        Parse the models_eval directory to load point cloud models.
+        Parse the models directory to load point cloud models.
         """
         model_path = os.path.join(self.root, "models")
         
@@ -153,8 +153,8 @@ class BPRPoseDataset(Dataset):
         return data_dict
     
 
-dataset = BPRPoseDataset(root = "/home/seif-ai/pose_cnn_project/E2E_Object_Pose_Estimator/BPR-Dataset"
-, split="train")
+dataset = BPRPoseDataset(root = "/home/seif-ai/pose_cnn_project/E2E_Object_Pose_Estimator/ipd"
+, split="train_pbr")
 data = dataset[0]
 
 print("RGB Shape:", data['rgb'].shape)
