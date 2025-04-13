@@ -133,10 +133,6 @@ def get_data():
         root = "ipd"
 
         train_dataset = BPRPoseDataset(root=root, split="train_pbr")
-        # val_dataset = BPRPoseDataset(root=root, split="val")
-
-        # Limit the training dataset to the first n samples for testing
-        train_dataset.samples = train_dataset.samples[:2]
 
         return train_dataset
 
