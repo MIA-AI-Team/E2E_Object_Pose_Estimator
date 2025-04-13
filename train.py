@@ -1,4 +1,5 @@
 import os
+os.environ['PYOPENGL_PLATFORM'] = 'egl'
 import time
 
 import matplotlib.pyplot as plt
@@ -25,7 +26,7 @@ import multiprocessing
 
 # Set a few constants related to data loading.
 NUM_CLASSES = 10
-BATCH_SIZE = 4
+BATCH_SIZE = 8
 NUM_WORKERS = multiprocessing.cpu_count()
 path = os.getcwd()
 PATH = os.path.join(path)
@@ -69,7 +70,7 @@ def main():
     _iter = 0
 
     st_time = time.time()
-    for epoch in range(10):
+    for epoch in range(20):
         train_loss = []
         dataloader.dataset.dataset_type = 'train'
         for batch in dataloader:
@@ -103,7 +104,7 @@ def main():
     plt.xlabel(f"Iteration (x {log_period})")
     plt.ylabel("Loss")
     plt.plot(loss_history)
-    plt.show()
+    plt.savefig("loss_history.png")
 
 
 if __name__ == '__main__':

@@ -2,11 +2,13 @@
 Implements the PoseCNN network architecture in PyTorch.
 """
 import random
+import os
 
 import numpy as np
 import torch
 import torch.nn as nn
 from torchvision.ops import RoIPool
+from PIL import Image # <-- Add this import
 
 from p4_helper import HoughVoting, _LABEL2MASK_THRESHOL, loss_cross_entropy, loss_Rotation, IOUselection
 from utils import quaternion_to_matrix
@@ -442,20 +444,63 @@ class PoseCNN(nn.Module):
         return output_dict
 
 
-def eval(model, dataloader, device, alpha = 0.35):
+
+def eval(model, dataloader, device, alpha = 0.35, save_path="/kaggle/working/"):
+    """
+    Evaluates the model on a random sample, saves the visualization, and returns the pose dict.
+    """
     model.eval()
 
     sample_idx = random.randint(0,len(dataloader.dataset)-1)
     ## image version vis
-    rgb = torch.tensor(dataloader.dataset[sample_idx]['rgb'][None, :]).to(device)
-    inputdict = {'rgb': rgb}
-    pose_dict, label = model(inputdict)
-    poselist = []
-    rgb =  (rgb[0].cpu().numpy().transpose(1, 2, 0) * 255).astype(np.uint8)
-    # print(pose_dict)
-    return dataloader.dataset.visualizer.vis_oneview(
-        ipt_im = rgb, 
-        obj_pose_dict = pose_dict[0],
-        alpha = alpha
-        )
+    # Ensure data is loaded correctly (handle potential dictionary vs tensor)
+    sample_data = dataloader.dataset[sample_idx]
+    if isinstance(sample_data, dict):
+        rgb_np = sample_data['rgb']
+    else:
+        # Assuming the first element is rgb if it's not a dict (adjust if needed)
+        rgb_np = sample_data[0] # Or however your dataset returns rgb
+
+    rgb_tensor = torch.tensor(rgb_np[None, :]).to(device) # Add batch dimension
+    inputdict = {'rgb': rgb_tensor}
+
+    # Run inference
+    with torch.no_grad():
+        pose_dict, label = model(inputdict) # Assuming model returns pose_dict, label
+
+    # Prepare RGB for visualization (convert tensor back to numpy if needed)
+    # Use the original numpy array for visualization to avoid potential float conversion issues
+    rgb_vis = (rgb_np.transpose(1, 2, 0) * 255).astype(np.uint8)
+
+    # Check if pose_dict is not empty and contains the expected batch key (0)
+    if pose_dict and 0 in pose_dict and pose_dict[0]:
+        # Generate the visualization image using the visualizer from the dataset
+        # Ensure the visualizer exists
+        if hasattr(dataloader.dataset, 'visualizer') and dataloader.dataset.visualizer:
+            rendered_image_np = dataloader.dataset.visualizer.vis_oneview(
+                ipt_im = rgb_vis.copy(), # Pass a copy to avoid modification issues
+                obj_pose_dict = pose_dict[0],
+                alpha = alpha
+            )
+
+            # --- Save the image ---
+            output_filename = os.path.join(save_path, f"eval_visualization_{sample_idx}.png")
+            try:
+                img_pil = Image.fromarray(rendered_image_np)
+                img_pil.save(output_filename)
+                print(f"Saved evaluation visualization to {output_filename}")
+            except Exception as e:
+                print(f"Error saving visualization image: {e}")
+                # Optionally return None or raise error if saving fails
+                return None, None # Return None if saving failed
+
+            # Return the pose dictionary and the saved image path (or the image itself if needed)
+            return pose_dict, output_filename
+        else:
+            print("Warning: Dataset visualizer not found or not initialized. Cannot generate visualization.")
+            return pose_dict, None # Return poses but no visualization path
+    else:
+        print(f"Warning: No poses detected for sample {sample_idx}. Skipping visualization.")
+        # Return the (potentially empty) pose dictionary and None for the path
+        return pose_dict, None
 

@@ -1,4 +1,6 @@
 import os
+os.environ['PYOPENGL_PLATFORM'] = 'egl'
+
 
 import matplotlib.pyplot as plt
 import torchvision.models as models
@@ -24,7 +26,7 @@ import multiprocessing
 
 # Set a few constants related to data loading.
 NUM_CLASSES = 10
-BATCH_SIZE = 4
+BATCH_SIZE = 8
 NUM_WORKERS = multiprocessing.cpu_count()
 path = os.getcwd()
 PATH = os.path.join(path)
@@ -65,11 +67,11 @@ def main():
     posecnn_model.load_state_dict(torch.load(os.path.join(PATH, "posecnn_model.pth")))
     num_samples = 5
     for i in range(num_samples):
-        out = eval(posecnn_model, dataloader, DEVICE)
+        out = eval(posecnn_model, dataloader, DEVICE, save_path=os.path.join(PATH, "output"))
 
-        plt.axis('off')
-        plt.imshow(out)
-        plt.show()
+        # plt.axis('off')
+        # plt.imshow(out)
+        # plt.show()
 
 
 if __name__ == '__main__':
