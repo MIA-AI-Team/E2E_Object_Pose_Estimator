@@ -9,16 +9,13 @@ import torchvision.models as models
 from torch.utils.data import DataLoader
 import open3d as o3d
 
-# Ensure these modules are available
 try:
     from p4_helper import *
 except ImportError:
     print("Warning: Could not import p4_helper. Make sure it's in your PYTHONPATH.")
 
-# Load the VGG16 model
 vgg16 = models.vgg16(weights=models.VGG16_Weights.IMAGENET1K_V1)
 
-# Import pose CNN components
 try:
     from pose_cnn import PoseCNN, FeatureExtraction, SegmentationBranch, TranslationBranch, RotationBranch
     
@@ -29,7 +26,6 @@ try:
 except ImportError:
     print("Warning: Could not import pose_cnn modules. Make sure they're in your PYTHONPATH.")
 
-# For plotting
 plt.rcParams["figure.figsize"] = (10.0, 8.0)
 plt.rcParams["font.size"] = 16
 plt.rcParams["image.interpolation"] = "nearest"
@@ -37,7 +33,6 @@ plt.rcParams["image.cmap"] = "gray"
 
 import multiprocessing
 
-# Set a few constants related to data loading.
 NUM_CLASSES = 10
 BATCH_SIZE = 1
 NUM_WORKERS = multiprocessing.cpu_count() // 2  # Half the cores to avoid OOM
@@ -59,7 +54,8 @@ import utils
 
 # Function to load point clouds from PLY files
 def load_point_clouds(model_paths, num_points=1000):
-    """
+    """!git clone https://github.com/MIA-AI-Team/E2E_Object_Pose_Estimator.git
+
     Load point clouds from model paths
     
     Args:
@@ -135,11 +131,10 @@ def get_data():
         # Define the root directory of the dataset
         root = "/home/seif-ai/pose_cnn_project/E2E_Object_Pose_Estimator/BPR-Dataset"
 
-        # Create datasets for training and validation
         train_dataset = BPRPoseDataset(root=root, split="train")
         val_dataset = BPRPoseDataset(root=root, split="val")
 
-        # Limit the training dataset to the first 5 images
+        # Limit the training dataset to the first n samples for testing
         train_dataset.samples = train_dataset.samples[:2]
 
         return train_dataset, val_dataset
@@ -151,10 +146,8 @@ def get_data():
 
 def main():
     try:
-        # Set random seed for reproducibility
         utils.reset_seed(0)
         
-        # Get datasets
         train_dataset, val_dataset = get_data()
         
         # Create data loaders with error handling
@@ -190,7 +183,6 @@ def main():
         models_pcd_tensor = torch.stack(model_pcds_tensor).to(DEVICE)
         print(f"Created point cloud tensor with shape: {models_pcd_tensor.shape}")
         
-        # Initialize the model
         print("Initializing PoseCNN model...")
         # Replace default_cam_intrinsic with a dynamically loaded or explicitly defined intrinsic matrix
         cam_intrinsic = np.array([[3280.98092, 0.0, 1200.0],
@@ -201,18 +193,15 @@ def main():
             models_pcd=models_pcd_tensor,
             cam_intrinsic=cam_intrinsic  # Pass the intrinsic matrix explicitly
         ).to(DEVICE)
-        # Set to training mode
         posecnn_model.train()
 
-        # Initialize optimizer
         optimizer = torch.optim.Adam(posecnn_model.parameters(), lr=0.001, betas=(0.9, 0.999))
         
-        # Training loop setup
         loss_history = []
         log_period = 5
         _iter = 0
         st_time = time.time()
-        epochs = 20  # Change this to train for more epochs
+        epochs = 20  
         
         print(f"Starting training for {epochs} epochs...")
         for epoch in range(epochs):
@@ -220,33 +209,26 @@ def main():
 
             train_loss = []
             
-            # Training loop
             for batch_idx, batch in enumerate(train_loader):
                 try:
-                    # Move batch to device
                     print(f"Batch {batch_idx} objs_id: {batch['objs_id']}")
                     print(f"train_dataset.obj_id_list: {train_dataset.obj_id_list}")
                     for item in batch:
                         batch[item] = batch[item].to(DEVICE)
 
-                    # Ensure valid indices in objs_id
                     if batch['objs_id'].max() >= len(train_dataset.obj_id_list):
                         print(f"Warning: Invalid object ID in batch {batch_idx}. Skipping.")
                         continue
 
-                    # Forward pass
                     loss_dict = posecnn_model(batch)
 
-                    # Backward pass
                     optimizer.zero_grad()
                     total_loss = sum(loss for loss in loss_dict.values())
                     total_loss.backward()
                     optimizer.step()
 
-                    # Track loss
                     train_loss.append(total_loss.item())
 
-                    # Logging
                     if _iter % log_period == 0:
                         loss_str = f"[Epoch {epoch+1}/{epochs}][Batch {batch_idx+1}/{len(train_loader)}][Iter {_iter}][loss: {total_loss:.3f}]"
                         for key, value in loss_dict.items():
@@ -259,7 +241,6 @@ def main():
                     print(f"Error in training batch {batch_idx}: {e}")
                     continue
 
-            # End of epoch
             elapsed_time = time.strftime("%Hh %Mm %Ss", time.gmtime(time.time() - st_time))
             if train_loss:
                 avg_loss = np.mean(train_loss)
@@ -272,7 +253,6 @@ def main():
         print(f"Saving model to {save_path}")
         torch.save(posecnn_model.state_dict(), save_path)
 
-        # Plot loss history
         if loss_history:
             plt.figure()
             plt.title("Training loss history")
