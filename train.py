@@ -53,10 +53,10 @@ def get_data():
     # )
     # val_dataset = PROPSPoseDataset(PATH, "val")
     # return train_dataset, val_dataset
-    train_dataset = BOPDataset(PATH, "train",
+    train_dataset = BOPDataset(PATH, "train_pbr",
                     download=False
     )
-    val_dataset = BOPDataset(PATH, "train")
+    val_dataset = BOPDataset(PATH, "train_pbr")
     return train_dataset, val_dataset
 
 

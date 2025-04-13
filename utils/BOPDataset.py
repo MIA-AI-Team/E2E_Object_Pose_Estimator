@@ -21,7 +21,7 @@ class BOPDataset(Dataset):
             download: bool = False,
             scene ="000000"
     ) -> None:
-        assert split in ['train', 'val']
+        assert split in ['train_pbr', 'val']
 
         self.root = root
         self.split = split
