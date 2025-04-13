@@ -132,7 +132,7 @@ def get_data():
         # Define the root directory of the dataset
         root = "ipd"
 
-        train_dataset = BPRPoseDataset(root=root, split="train")
+        train_dataset = BPRPoseDataset(root=root, split="train_pbr")
         val_dataset = BPRPoseDataset(root=root, split="val")
 
         # Limit the training dataset to the first n samples for testing
