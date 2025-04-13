@@ -1,4 +1,5 @@
 import os
+os.environ['PYOPENGL_PLATFORM'] = 'egl'
 import time
 import torch
 import numpy as np
@@ -260,7 +261,6 @@ def main():
             plt.ylabel("Loss")
             plt.plot(loss_history)
             plt.savefig(os.path.join(PATH, "loss_history.png"))
-            plt.show()
         else:
             print("No loss history to plot")
             
