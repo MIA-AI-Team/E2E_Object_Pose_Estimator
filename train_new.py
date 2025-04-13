@@ -133,12 +133,12 @@ def get_data():
         root = "ipd"
 
         train_dataset = BPRPoseDataset(root=root, split="train_pbr")
-        val_dataset = BPRPoseDataset(root=root, split="val")
+        # val_dataset = BPRPoseDataset(root=root, split="val")
 
         # Limit the training dataset to the first n samples for testing
         train_dataset.samples = train_dataset.samples[:2]
 
-        return train_dataset, val_dataset
+        return train_dataset
 
     except Exception as e:
         print(f"Error loading datasets: {e}")
@@ -149,7 +149,7 @@ def main():
     try:
         utils.reset_seed(0)
         
-        train_dataset, val_dataset = get_data()
+        train_dataset = get_data()
         
         # Create data loaders with error handling
         train_loader = DataLoader(
