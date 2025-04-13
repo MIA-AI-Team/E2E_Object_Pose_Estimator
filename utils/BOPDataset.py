@@ -12,20 +12,21 @@ from utils import Visualize, chromatic_transform, add_noise
 
 
 class BOPDataset(Dataset):
-    base_folder = "BOP-Dataset"
+    base_folder = "ipd"
 
     def __init__(
             self,
             root: str,
             split: str = 'train',
             download: bool = False,
+            scene ="000000"
     ) -> None:
         assert split in ['train', 'val']
 
         self.root = root
         self.split = split
         self.dataset_dir = os.path.join(self.root, self.base_folder)
-
+        self.scene = scene
         if download:
             self.download()
 
@@ -56,13 +57,13 @@ class BOPDataset(Dataset):
             self.id2label[id] = idx + 1
 
     def parse_dir(self):
-        data_dir = os.path.join(self.dataset_dir, self.split)
+        data_dir = os.path.join(self.dataset_dir, self.split,self.scene)
         rgb_path = os.path.join(data_dir, "rgb_cam1")
         depth_path = os.path.join(data_dir, "depth_cam1")
         mask_path = os.path.join(data_dir, "mask_visib_cam1")
-        scene_gt_json = "BOP-Dataset/train/scene_gt_cam1.json"
-        scene_gt_info_json = "BOP-Dataset/train/scene_gt_info_cam1.json"
-        scene_camera_json = "BOP-Dataset/train/scene_camera_cam1.json"
+        scene_gt_json = os.path.join(data_dir,"scene_gt_cam1.json")
+        scene_gt_info_json = os.path.join(data_dir,"scene_gt_info_cam1.json")
+        scene_camera_json = os.path.join(data_dir,"scene_camera_cam1.json")
         rgb_list = os.listdir(rgb_path)
         rgb_list.sort()
         depth_list = os.listdir(depth_path)
