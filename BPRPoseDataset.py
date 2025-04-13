@@ -153,8 +153,7 @@ class BPRPoseDataset(Dataset):
         return data_dict
     
 
-dataset = BPRPoseDataset(root = "/home/seif-ai/pose_cnn_project/E2E_Object_Pose_Estimator/ipd"
-, split="train_pbr")
+dataset = BPRPoseDataset(root = "ipd", split="train_pbr")
 data = dataset[0]
 
 print("RGB Shape:", data['rgb'].shape)
